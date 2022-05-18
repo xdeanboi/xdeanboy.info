@@ -17,11 +17,23 @@ return [
      * Books links
      */
     '~^books$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewAll'],
+    '~^books/search$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewBySearch'],
+    //Зробити редагування, додавання, видалення книг
+    '~^books/filter/author/(.*)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByAuthor'],
+    '~^books/filter/genre/(.*)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByGenre'],
+    '~^books/filter/language/(.*)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByLanguage'],
+    '~^books/filter$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByFilter'],
+    '~^books/(\d+)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewBook'],
+    '~^books/(\d+)/edit$~' => [\xDeanBoy\Controllers\BooksController::class, 'editBook'],
+    '~^books/(\d+)/delete$~' => [\xDeanBoy\Controllers\BooksController::class, 'deleteBook'],
 
     /**
      * Video links
      */
     '~^video$~' => [\xDeanBoy\Controllers\VideoController::class, 'viewAll'],
+    '~^video/(\d+)$~' => [\xDeanBoy\Controllers\VideoController::class, 'viewVideo'],
+    '~^video/(\d+)/edit$~' => [\xDeanBoy\Controllers\VideoController::class, 'editVideo'],
+    '~^video/(\d+)/delete$~' => [\xDeanBoy\Controllers\VideoController::class, 'deleteVideo'],
 
     /**
      * About author link
@@ -49,3 +61,8 @@ return [
     '~^admin/users$~' => [\xDeanBoy\Controllers\AdminControllers\AdminUsersController::class, 'view'],
 
 ];
+
+/**
+ * Filters for books - authors, genre, language
+ * add pages edit, delete, add books
+ */

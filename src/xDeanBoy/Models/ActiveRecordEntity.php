@@ -205,6 +205,7 @@ abstract class ActiveRecordEntity
         $db = Db::getInstance();
 
         $sql = 'SELECT * FROM ' . static::getTableName() . ' WHERE ' . $columnName . ' = :value;';
+
         $result = $db->query($sql, [':value' => $value], static::class);
 
         if (empty($result)) {
@@ -228,7 +229,7 @@ abstract class ActiveRecordEntity
     }
 
     /**
-     * @param string $columnByOrder
+     * @param array $columnsByOrder
      * @return array|null
      */
     public static function findAllByOrderArrayDesc(array $columnsByOrder): ?array
@@ -247,4 +248,5 @@ abstract class ActiveRecordEntity
 
         return $result;
     }
+
 }

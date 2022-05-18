@@ -1623,3 +1623,189 @@ h2 {
     margin-left: -20px;
     margin-bottom: 20px;
 }
+
+/*Books*/
+
+.main_container {
+    padding: 50px;
+}
+
+.block_row h2 {
+    text-align: center;
+}
+
+.block_content {
+    border-radius: 10px;
+    background: #dcd7e7;
+    padding: 20px;
+}
+
+.block_sidebar {
+    border-radius: 10px;
+    background: #dcd7e7;
+    height: 350px;
+    margin-right: -50px;
+    margin-left: 10px;
+    padding: 20px;
+}
+
+.block_books h4 {
+    margin-left: 10px;
+}
+
+.without_filter {
+    color: #d22f2f;
+}
+
+.block_search {
+    text-align: center;
+}
+
+.block_search .search_input {
+    width: 500px;
+    background: #dcd7e7;
+    border-radius: 10px;
+    border: 2px solid #543894;
+    padding-left: 20px;
+    font-weight: 350;
+}
+
+.block_search .search_input:focus, .block_search .search_input:hover {
+    font-weight: 500;
+    outline: none;
+    box-shadow: 0 0 10px #543894;
+}
+
+.block_search .search_btn {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    border: none;
+    padding: 2px 8px;
+    background: transparent;
+}
+
+.block_search .search_btn:hover {
+    box-shadow: inset 0 0 10px #543894;
+}
+
+.block_row .block_content .block_book {
+    display: block;
+    height: auto;
+    border-radius: 10px;
+    background: #ccc3e0;
+    margin: 15px 26px 15px 26px;
+    padding: 10px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.block_row .block_content .block_book:hover {
+    background: transparent;
+    border: 4px solid #ccc3e0;
+    box-shadow: 0 0 10px #543894;
+}
+
+.block_row .block_content .block_book a img {
+    height: 250px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.block_row .block_content .block_book h6 {
+    margin-bottom: 10px;
+}
+
+.programming_language {
+    border: 2px solid #543894;
+    border-radius: 10px;
+    padding: 5px;
+    background: #543894;
+    text-decoration: none;
+    color: #dcd7e7;
+    font-weight: 600;
+}
+
+.programming_language:hover {
+    background: #ccc3e0;
+    color: #543894;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.book_name, .book_name a{
+    color: #4d2e9a;
+    font-weight: 800;
+}
+
+.book_author, .book_author a {
+    color: darkred;
+    font-style: italic;
+    font-weight: 500;
+}
+
+.book_view h3 {
+    border-radius: 10px;
+    background: #ccc3e0;
+    color: #55399b;
+    font-weight: 800;
+    padding: 10px 5px 10px 5px;
+    text-align: center;
+}
+
+.book_view .block_row {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.book_view .block_row img {
+    height: 450px;
+}
+
+.book_view .block_row .book_information {
+    border-radius: 10px;
+    background: #ccc3e0;
+    padding: 30px;
+    font-weight: 600;
+}
+
+.book_view .block_row .book_information p a {
+    font-style: italic;
+    color: #55399b;
+    font-weight: 600;
+}
+
+.book_description {
+    font-style: italic;
+    text-align: justify;
+    font-weight: 300;
+}
+
+.block_sidebar .filter_name .submit {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.block_sidebar .filter_name .input_pages {
+    width: 75px;
+    border-radius: 10px;
+    border: 2px solid #55399b;
+}
+
+.block_sidebar .filter_name .input_pages:focus {
+    outline: none;
+    box-shadow: 0 0 10px #543894;
+    font-weight: 500;
+}
+
+.block_sidebar .filter_name label {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0a17b7;
+}
+
+.block_sidebar .filter_name div {
+    margin-bottom: 10px;
+}
