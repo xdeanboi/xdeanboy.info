@@ -18,13 +18,14 @@ return [
      */
     '~^books$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewAll'],
     '~^books/search$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewBySearch'],
-    //Зробити редагування, додавання, видалення книг
     '~^books/filter/author/(.*)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByAuthor'],
     '~^books/filter/genre/(.*)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByGenre'],
     '~^books/filter/language/(.*)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByLanguage'],
     '~^books/filter$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewByFilter'],
     '~^books/(\d+)$~' => [\xDeanBoy\Controllers\BooksController::class, 'viewBook'],
+    '~^books/add$~' => [\xDeanBoy\Controllers\BooksController::class, 'addBook'],
     '~^books/(\d+)/edit$~' => [\xDeanBoy\Controllers\BooksController::class, 'editBook'],
+    '~^books/(\d+)/edit/successful$~' => [\xDeanBoy\Controllers\BooksController::class, 'editBookSuccessful'],
     '~^books/(\d+)/delete$~' => [\xDeanBoy\Controllers\BooksController::class, 'deleteBook'],
 
     /**
@@ -63,6 +64,5 @@ return [
 ];
 
 /**
- * Filters for books - authors, genre, language
- * add pages edit, delete, add books
+ * Edit admin statistics
  */

@@ -63,6 +63,12 @@ class BooksController extends AbstractController
                 'languages' => $languages]);
     }
 
+    /**
+     * @return void
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
     public function viewBySearch(): void
     {
         if (empty($this->user)) {
@@ -627,5 +633,195 @@ class BooksController extends AbstractController
                 'books' => null,
                 'genres' => $genres,
                 'languages' => $languages]);
+    }
+
+    /**
+     * @param int $bookId
+     * @return void
+     * @throws ForbiddenException
+     * @throws InvalidArgumentException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function editBook(int $bookId): void
+    {
+        if (empty($this->user)) {
+            throw new UnauthorizedException();
+        }
+
+        if (!$this->user->isAdmin()) {
+            throw new ForbiddenException();
+        }
+
+        $book = Books::getById($bookId);
+
+        if (empty($book)) {
+            throw new NotFoundException('Книга не знайдена');
+        }
+
+        $authorsByBook = Books::getAuthorsBook($bookId);
+        $authorsFullName = [];
+
+        if (!empty($authorsByBook)) {
+            foreach ($authorsByBook as $authorByBook) {
+                $authorsFullName[] = $authorByBook->getFullName();
+            }
+        }
+
+        $bookGenres = BookGenre::findAll();
+
+        if (empty($bookGenres)) {
+            throw new InvalidArgumentException('Жанри книг не знайдені');
+        }
+
+        $bookLanguages = BookLanguage::findAll();
+
+        if (empty($bookLanguages)) {
+            throw new InvalidArgumentException('Мови не знайдені');
+        }
+
+        if (!empty($_POST)) {
+            try {
+                $book->edit($_POST);
+
+                header('Location: /books/' . $book->getId() . '/edit/successful', true, 302);
+                return;
+            } catch (InvalidArgumentException $e) {
+                $this->view->renderHtml('books/bookEdit.php',
+                    ['title' => 'Редагування книги ' . $bookId,
+                        'error' => $e->getMessage(),
+                        'book' => $book,
+                        'authorsByBook' => $authorsByBook,
+                        'bookGenres' => $bookGenres,
+                        'bookLanguages' => $bookLanguages]);
+                return;
+            }
+
+        }
+
+        $this->view->renderHtml('books/bookEdit.php',
+            ['title' => 'Редагування книги ' . $bookId,
+                'book' => $book,
+                'authorsFullName' => $authorsFullName,
+                'bookGenres' => $bookGenres,
+                'bookLanguages' => $bookLanguages]);
+    }
+
+    /**
+     * @param int $bookId
+     * @return void
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function editBookSuccessful(int $bookId): void
+    {
+        if (empty($this->user)) {
+            throw new UnauthorizedException();
+        }
+
+        if (!$this->user->isAdmin()) {
+            throw new ForbiddenException();
+        }
+
+        $book = Books::getById($bookId);
+
+        if (empty($book)) {
+            throw new NotFoundException();
+        }
+
+        $this->view->renderHtml('books/bookEditSuccessful.php',
+            ['title' => 'Успішно редаговано',
+                'book' => $book]);
+    }
+
+    /**
+     * @param int $bookId
+     * @return void
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function deleteBook(int $bookId): void
+    {
+        if (empty($this->user)) {
+            throw new UnauthorizedException();
+        }
+
+        if (!$this->user->isAdmin()) {
+            throw new ForbiddenException();
+        }
+
+        $book = Books::getById($bookId);
+
+        if (empty($book)) {
+            throw new NotFoundException('Книгу не знайденео');
+        }
+
+        $bookCharacteristic = BookCharacteristic::getById($bookId);
+
+        if (empty($bookCharacteristic)) {
+            throw new NotFoundException('Характеристика книги не знайдена');
+        }
+
+        $connectionsBookAndAuthors = BooksAndAuthors::findAllByBookId($bookId);
+
+        if (empty($connectionsBookAndAuthors)) {
+            throw new NotFoundException('Зв\'язок книги з авторами не знайдений');
+        }
+
+        $book->delete();
+        $bookCharacteristic->delete();
+        foreach ($connectionsBookAndAuthors as $connectionBookAndAuthors) {
+            $connectionBookAndAuthors->delete();
+        }
+
+        $this->view->renderHtml('books/bookDeleteSuccessful.php',
+            ['title' => 'Успішне видалення',
+                'bookId' => $bookId]);
+    }
+
+    public function addBook(): void
+    {
+        if(empty($this->user)) {
+            throw new UnauthorizedException();
+        }
+
+        if(!$this->user->isAdmin()) {
+            throw new ForbiddenException();
+        }
+
+        $bookGenres = BookGenre::findAll();
+
+        if (empty($bookGenres)) {
+            throw new NotFoundException('Жанри книг не знайдені');
+        }
+
+        $bookLanguages = BookLanguage::findAll();
+
+        if (empty($bookLanguages)) {
+            throw new NotFoundException('Мови книг не знайдені');
+        }
+
+        if(!empty($_POST)) {
+            try {
+                $book = Books::addBook($_POST);
+
+                header('Location: /books/' . $book->getId(), true, 302);
+                return;
+            } catch (InvalidArgumentException $e) {
+                $this->view->renderHtml('books/bookAdd.php',
+                    ['title' => 'Добавити книгу',
+                        'error' => $e->getMessage(),
+                        'bookGenres' => $bookGenres,
+                        'bookLanguages' => $bookLanguages]);
+                return;
+            }
+        }
+
+        $this->view->renderHtml('books/bookAdd.php',
+        ['title' => 'Добавити книгу',
+            'bookGenres' => $bookGenres,
+            'bookLanguages' => $bookLanguages]);
     }
 }

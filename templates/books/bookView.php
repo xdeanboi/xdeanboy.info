@@ -5,6 +5,11 @@
         <!--Block content and book_view block-->
         <div class="book_view block_content">
 
+            <div class="row_btns">
+                <a href="/books/<?= $book->getId()?>/edit" class="btn_edit">Редагувати</a>
+                <a href="/books/<?= $book->getId()?>/delete" class="btn_delete">X</a>
+            </div>
+
             <!--Header book with name and authors-->
             <h3><?= $book->getName() ?> | <?= implode(', ', $authorsFullName)?></h3>
             <!--Header book with name and authors-->

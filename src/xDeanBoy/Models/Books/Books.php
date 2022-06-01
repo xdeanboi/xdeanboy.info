@@ -77,6 +77,42 @@ class Books extends ActiveRecordEntity
         return !empty($link) ? $link->getLink() : null;
     }
 
+    public function setAuthorsByFullName(string $authorsFullName): void
+    {
+        $authorsWithFullName = explode(', ', $authorsFullName);
+
+        $checkAuthors = [];
+        $notFoundAuthors = [];
+
+        foreach ($authorsWithFullName as $authorWithFullName) {
+            $checkAuthors[] = BookAuthors::getByFullName($authorWithFullName);
+
+            if (empty($checkAuthors)) {
+                $notFoundAuthors[] = $authorWithFullName;
+            }
+        }
+
+        if (!empty($checkAuthors)) {
+            foreach ($checkAuthors as $checkAuthor) {
+                $connectionBookAndAuthor = new BooksAndAuthors();
+                $connectionBookAndAuthor->setAuthorId($checkAuthor->getId());
+                $connectionBookAndAuthor->setBookId($this->getId());
+                $connectionBookAndAuthor->save();
+            }
+        } else {
+            foreach ($notFoundAuthors as $notFoundAuthor) {
+                $newAuthor = new BookAuthors();
+                $newAuthor->setFullName($notFoundAuthor);
+                $newAuthor->save();
+
+                $connectionBookAndAuthor = new BooksAndAuthors();
+                $connectionBookAndAuthor->setAuthorId($newAuthor->getId());
+                $connectionBookAndAuthor->setBookId($this->getId());
+                $connectionBookAndAuthor->save();
+            }
+        }
+    }
+
     /**
      * @return string
      */
@@ -292,5 +328,138 @@ class Books extends ActiveRecordEntity
         }
 
         return null;
+    }
+
+    public function edit(array $bookFields): self
+    {
+        $characteristic = BookCharacteristic::getById($this->getId());
+
+        if (empty($characteristic)) {
+            throw new NotFoundException('Характеристика книги не знайдена');
+        }
+
+        if (!empty($bookFields['name'])) {
+            $this->setName($bookFields['name']);
+        }
+
+        if(!empty($bookFields['authors'])) {
+            $this->setAuthorsByFullName($bookFields['authors']);
+        }
+
+        if (!empty($bookFields['description'])) {
+            $this->setDescription($bookFields['description']);
+        }
+
+        $this->save();
+
+        if(!empty($bookFields['pages'])) {
+            $characteristic->setPages($bookFields['pages']);
+        }
+
+        if(!empty($bookFields['year'])) {
+            $characteristic->setYear($bookFields['year']);
+        }
+
+        if (!empty($bookFields['genre'])) {
+            $characteristic->setGenre($bookFields['genre']);
+        }
+
+        $characteristic->save();
+
+        if (!empty($bookFields['imageLink'])) {
+            $checkImage = BookImages::getByImageLink($bookFields['imageLink']);
+
+            if (empty($checkImage)) {
+                $newImage = new BookImages();
+                $newImage->setLink($bookFields['imageLink']);
+                $newImage->save();
+            }
+        }
+
+        return $this;
+    }
+
+    public static function addBook(array $bookFields): ?self
+    {
+        if (empty($bookFields['name'])) {
+            throw new InvalidArgumentException('Заповніть поле Назва книги');
+        }
+
+        if (empty($bookFields['authors'])) {
+            throw new InvalidArgumentException('Заповніть поле Автори');
+        }
+
+        if (empty($bookFields['pages'])) {
+            throw new InvalidArgumentException('Заповніть поле Сторінки');
+        }
+
+        if (empty($bookFields['year'])) {
+            throw new InvalidArgumentException('Заповніть поле Рік');
+        }
+
+        if (empty($bookFields['genre'])) {
+            throw new InvalidArgumentException('Виберіть жанр книги');
+        }
+
+        if (empty($bookFields['language'])) {
+            throw new InvalidArgumentException('Виберіть мову книги');
+        }
+
+        if (empty($bookFields['imageLink'])) {
+            throw new InvalidArgumentException('Заповніть поле Посилання на фото');
+        }
+
+        if (empty($bookFields['description'])) {
+            throw new InvalidArgumentException('Заповніть поле Короткий опис');
+        }
+
+        //Books properties
+        $book = new self();
+        $book->setName($bookFields['name']);
+        $book->setDescription($bookFields['description']);
+        $book->save();
+
+        //BookCharacteristic properties
+        $bookCharacteristics = new BookCharacteristic();
+        $bookCharacteristics->setPages($bookFields['pages']);
+        $bookCharacteristics->setYear($bookFields['year']);
+        $bookCharacteristics->setGenre($bookFields['genre']);
+        $bookCharacteristics->setLanguage($bookFields['language']);
+        $bookCharacteristics->save();
+
+        //BookAuthors properties
+        $authorsFullName = explode(',', $bookFields['authors']);
+
+        foreach ($authorsFullName as $authorFullName) {
+            [$testSurname, $testName] = explode(' ', $authorFullName);
+
+            if (empty($testSurname) || empty($testName)) {
+                throw new InvalidArgumentException('Автор має мати Прізвище та Ім\'я');
+            }
+
+            $connectionAuthorWithBook = new BooksAndAuthors();
+            $connectionAuthorWithBook->setBookId($book->getId());
+
+            $testAuthor = BookAuthors::getByFullName($authorFullName);
+
+            if (empty($testAuthor)) {
+                $bookAuthor = new BookAuthors();
+                $bookAuthor->setFullName($authorFullName);
+                $bookAuthor->save();
+
+                $connectionAuthorWithBook->setAuthorId($bookAuthor->getId());
+                $connectionAuthorWithBook->insert();
+            } else {
+                $connectionAuthorWithBook->setAuthorId($testAuthor->getId());
+                $connectionAuthorWithBook->insert();
+            }
+        }
+
+        //Book image
+        $bookImage = new BookImages();
+        $bookImage->setLink($bookFields['imageLink']);
+        $bookImage->save();
+
+        return $book;
     }
 }

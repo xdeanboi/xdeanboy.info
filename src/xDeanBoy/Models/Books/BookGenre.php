@@ -34,9 +34,9 @@ class BookGenre extends ActiveRecordEntity
 
     /**
      * @param string $name
-     * @return array|null
+     * @return self|null
      */
-    public static function getByName(string $name)
+    public static function getByName(string $name): ?self
     {
         $result = self::findOneByColumn('name', $name);
 

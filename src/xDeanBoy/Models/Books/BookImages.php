@@ -31,4 +31,15 @@ class BookImages extends ActiveRecordEntity
     {
         return 'book_images';
     }
+
+    /**
+     * @param string $link
+     * @return static|null
+     */
+    public static function getByImageLink(string $link): ?self
+    {
+        $result = self::findOneByColumn('link', $link);
+
+        return !empty($result) ? $result : null;
+    }
 }

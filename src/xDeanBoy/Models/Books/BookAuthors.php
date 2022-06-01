@@ -42,22 +42,23 @@ class BookAuthors extends ActiveRecordEntity
     }
 
     /**
+     * @param string $fullName
+     * @return void
+     */
+    public function setFullName(string $fullName): void
+    {
+        [$surname, $name] = explode(' ', $fullName, 2);
+
+        $this->setSurname($surname);
+        $this->setName($name);
+    }
+
+    /**
      * @return string
      */
     public function getFullName(): string
     {
         return $this->getSurname() . ' ' . $this->getName();
-    }
-
-    /**
-     * @param string $surname
-     * @param string $name
-     * @return void
-     */
-    public function setFullName(string $surname, string $name): void
-    {
-        $this->surname = $surname;
-        $this->name = $name;
     }
 
     /**
@@ -138,4 +139,49 @@ class BookAuthors extends ActiveRecordEntity
         return null;
     }
 
+
+    /**
+     * @param string $fullName
+     * @return static|null
+     */
+    public static function getByFullName(string $fullName): ?self
+    {
+        [$surname, $name] = explode(' ', $fullName, 2);
+
+        $allSurnames = self::getByAllSurname($surname);
+
+        if (empty($allSurnames)) {
+            return null;
+        }
+
+        $idBySurnames = [];
+
+        foreach ($allSurnames as $allSurname) {
+            $idBySurnames[] = $allSurname->getId();
+        }
+
+        $allNames = self::getAllByName($name);
+
+        if (empty($allNames)) {
+            return null;
+        }
+
+        $idByNames = [];
+
+        foreach ($allNames as $allName) {
+            $idByNames[] = $allName->getId();
+        }
+
+        $checkIdByFullName = array_intersect($idBySurnames, $idByNames);
+
+        if (empty($checkIdByFullName)) {
+            return null;
+        }
+
+        $idByFullName = array_shift($checkIdByFullName);
+
+        $author = self::getById($idByFullName);
+
+        return !empty($author) ? $author : null;
+    }
 }

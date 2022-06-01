@@ -56,7 +56,7 @@ class BookCharacteristic extends ActiveRecordEntity
      */
     public function getGenreId(): int
     {
-        return $this->genreId;
+        return (int)$this->genreId;
     }
 
     /**
@@ -67,6 +67,19 @@ class BookCharacteristic extends ActiveRecordEntity
         $genre = BookGenre::getById($this->getGenreId());
 
         return !empty($genre) ? $genre->getName() : null;
+    }
+
+    /**
+     * @param string $genreName
+     * @return void
+     */
+    public function setGenre(string $genreName): void
+    {
+        $genre = BookGenre::getByName($genreName);
+
+        if (!empty($genre)) {
+            $this->setGenreId($genre->getId());
+        }
     }
 
     /**
@@ -83,6 +96,15 @@ class BookCharacteristic extends ActiveRecordEntity
     public function getLanguageId(): int
     {
         return $this->languageId;
+    }
+
+    public function setLanguage(string $languageName): void
+    {
+        $language = BookLanguage::getByName($languageName);
+
+        if (!empty($language)) {
+            $this->setLanguageId($language->getId());
+        }
     }
 
     /**
