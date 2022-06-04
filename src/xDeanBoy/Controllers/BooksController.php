@@ -781,6 +781,12 @@ class BooksController extends AbstractController
                 'bookId' => $bookId]);
     }
 
+    /**
+     * @return void
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
     public function addBook(): void
     {
         if(empty($this->user)) {

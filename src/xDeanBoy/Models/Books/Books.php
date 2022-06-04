@@ -330,6 +330,11 @@ class Books extends ActiveRecordEntity
         return null;
     }
 
+    /**
+     * @param array $bookFields
+     * @return $this
+     * @throws NotFoundException
+     */
     public function edit(array $bookFields): self
     {
         $characteristic = BookCharacteristic::getById($this->getId());
@@ -379,6 +384,11 @@ class Books extends ActiveRecordEntity
         return $this;
     }
 
+    /**
+     * @param array $bookFields
+     * @return static|null
+     * @throws InvalidArgumentException
+     */
     public static function addBook(array $bookFields): ?self
     {
         if (empty($bookFields['name'])) {

@@ -39,15 +39,15 @@
 
                         <ul>
                             <li>Загальна кількість: <span><?= $statistics['books']['count'] ?? 0 ?></span></li>
-                            <li>За останню неділю: <span>!</span></li>
-                            <li>За сьогодні: <span>!</span></li>
+                            <li>За останню неділю: <span><?= $statistics['books']['lastWeek']?></span></li>
+                            <li>За сьогодні: <span><?= $statistics['books']['lastDay']?></span></li>
                             <li>Всього за розділами:
                                 <ul>
-                                    <li>SectionName: <span>!</span></li>
-                                    <li>SectionName: <span>!</span></li>
-                                    <li>SectionName: <span>!</span></li>
-                                    <li>SectionName: <span>!</span></li>
-                                    <li>SectionName: <span>!</span></li>
+                                    <? foreach ($booksGenres as $booksGenre):?>
+                                    <li><?= $booksGenre->getName()?>:
+                                        <span><?= $statistics['books']['genres'][$booksGenre->getName()] ?? 0?></span>
+                                    </li>
+                                    <? endforeach;?>
                                 </ul>
                             </li>
                         </ul>

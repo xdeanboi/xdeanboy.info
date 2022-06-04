@@ -64,5 +64,5 @@ return [
 ];
 
 /**
- * Edit admin statistics
+ * Edit admin statistics all
  */
